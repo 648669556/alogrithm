@@ -1,38 +1,44 @@
 package com.alogrithm;
 
 
-import com.alogrithm.util.TreeNode;
-import com.alogrithm.util.UtilTool;
-import jdk.jshell.execution.Util;
-
 import java.util.*;
 
 public class Solution {
     final Random random = new Random();
     final int MOD = (int) 1e9 + 7;
 
-    public TreeNode searchBST(TreeNode root, int val) {
-        if (root == null) {
-            return null;
-        }
-        if (root.val == val) {
-            return root;
-        }
 
-        TreeNode leftNode = searchBST(root.left, val);
-        if (leftNode != null) return leftNode;
-        TreeNode rightNode = searchBST(root.right, val);
-        if (rightNode != null) return rightNode;
-        return null;
+    public int largestSumAfterKNegations(int[] arr, int target) {
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
+        int res = 0, minNumber = Integer.MAX_VALUE;
+        for (int i : arr) {
+            if (i <= 0) {
+                queue.offer(i);
+            } else {
+                res += i;
+            }
+            minNumber = Math.min(minNumber, Math.abs(i));
+        }
+        while (target > 0 && !queue.isEmpty()) {
+            final Integer poll = queue.poll();
+            res += Math.abs(poll);
+            target--;
+        }
+        while (!queue.isEmpty()) {
+            res += queue.poll();
+        }
+        if (target > 0 && (target & 1) == 1) {
+            return res - minNumber * 2;
+        } else {
+            return res;
+        }
     }
 
 
     public void run() {
-        String input = "4,2,1,3,None,None,None,None,7,None,None,";
-        final TreeNode deserialize = UtilTool.deserialize(input);
+        int[] input = {3, -1, 0, 2};
         long before = System.currentTimeMillis();
-        final TreeNode treeNode = searchBST(deserialize, 4);
-        UtilTool.bfsPrintTree(treeNode);
+        System.out.println(largestSumAfterKNegations(input, 3));
         System.out.println("耗时" + (System.currentTimeMillis() - before) + "ms");
     }
 

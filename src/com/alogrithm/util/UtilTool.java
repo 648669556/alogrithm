@@ -1,5 +1,6 @@
 package com.alogrithm.util;
 
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,8 +41,22 @@ public class UtilTool {
         return rdeserialize(dataList);
     }
 
-    public static TreeNode deserialize(int[] data,int index){
-        
+    static int index;
+
+    public static TreeNode deserialize(Integer[] data) {
+        index = 0;
+        return rdeserialize(data);
+    }
+
+    private static TreeNode rdeserialize(Integer[] data) {
+        if (data[index] == null) {
+            index++;
+            return null;
+        }
+        TreeNode root = new TreeNode(data[index++]);
+        root.left = rdeserialize(data);
+        root.right = rdeserialize(data);
+        return root;
     }
 
     private static String rserialize(TreeNode root, String str) {
