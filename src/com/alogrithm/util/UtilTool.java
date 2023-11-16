@@ -1,14 +1,8 @@
 package com.alogrithm.util;
 
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.io.*;
+import java.util.*;
 
 public class UtilTool {
     public static void bfsPrintTree(TreeNode node) {
@@ -113,11 +107,11 @@ public class UtilTool {
             if (!exists) throw new IOException("创建文件夹失败");
         }
         File newFile = new File(path + "/text.txt");
-        if(!newFile.exists()) newFile.createNewFile();
+        if (!newFile.exists()) newFile.createNewFile();
         BufferedReader br = new BufferedReader(new FileReader(newFile));
         String line = br.readLine();
         br.close();
-        if (line == null ||line.length() == 0) return new int[]{};
+        if (line == null || line.length() == 0) return new int[]{};
         return strConvert2Arr(line);
     }
 
@@ -138,18 +132,31 @@ public class UtilTool {
             if (!exists) throw new IOException("创建文件夹失败");
         }
         File newFile = new File(path + "/text.txt");
-        if(!newFile.exists()) newFile.createNewFile();
+        if (!newFile.exists()) newFile.createNewFile();
         BufferedReader br = new BufferedReader(new FileReader(newFile));
         String line = br.readLine();
         br.close();
-        if (line == null ||line.length() == 0) return new int[][]{};
+        if (line == null || line.length() == 0) return new int[][]{};
         String newLine = line.substring(1, line.length() - 1);
-        String[] str = newLine.split(",");
-        int[][] res = new int[str.length][];
-        for (int i = 0; i < str.length; i++) {
-            res[i] = strConvert2Arr(str[i]);
+        List<Integer> splitIndex = new ArrayList<>();
+        for (int i = 0; i < newLine.length(); i++) {
+            if (i > 0 && newLine.charAt(i - 1) == ']' && newLine.charAt(i) == ',' && newLine.charAt(i + 1) == '[') {
+                splitIndex.add(i);
+            }
         }
-        return res;
+        int[][] newArr = new int[splitIndex.size() + 1][];
+        if (splitIndex.size() == 0) {
+            newArr[0] = strConvert2Arr(newLine);
+            return newArr;
+        }
+        int before = 0;
+        for (int i = 0; i < splitIndex.size(); i++) {
+            int[] ints = strConvert2Arr(newLine.substring(before, splitIndex.get(i)));
+            newArr[i] = ints;
+            before = splitIndex.get(i) + 1;
+        }
+        newArr[splitIndex.size()] = strConvert2Arr(newLine.substring(before));
+        return newArr;
     }
 
     public static int[] arrOne() {
@@ -168,5 +175,25 @@ public class UtilTool {
             e.printStackTrace();
         }
         return new int[][]{};
+    }
+
+    public static String getStr(String textPath) throws IOException {
+        File newFile = new File(textPath);
+        if (!newFile.exists()) {
+            try {
+                boolean newFile1 = newFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        BufferedReader br = new BufferedReader(new FileReader(newFile));
+        String tempStr = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        do {
+            tempStr = br.readLine();
+            if (tempStr != null)
+                stringBuilder.append(tempStr).append('\n');
+        } while (tempStr != null);
+        return stringBuilder.toString();
     }
 }

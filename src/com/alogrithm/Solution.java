@@ -3,8 +3,10 @@ package com.alogrithm;
 
 import com.alogrithm.util.UtilTool;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 
 public class Solution {
@@ -12,33 +14,46 @@ public class Solution {
     final int MOD = (int) 1e9 + 7;
     final int INF = 0x3f3f3f3f;
 
-    public int bestRotation(int[] nums) {
-        int len = nums.length;
-        int maxIndex = -1;
-        int maxCount = 0;
-        int[] sum = new int[len];
-        for (int i = 0; i < len; i++) {
-            Arrays.fill(sum, 1);
-            sum[i] = -(len - 1);
-            sum[0] = (len - i) % len;
-            int curIndex = 0;
-            int curCount = 0;
-            for (int j = 0; j < len; j++) {
-                curIndex += sum[j];
-                if (nums[j] <= curIndex) curCount++;
-            }
-            if (curCount > maxCount) {
-                maxIndex = i;
-                maxCount = curCount;
-            }
+    public String getSqlResult(String sql, String sqlParam) {
+        sqlParam = sqlParam.replaceAll("\\s+", "");
+        String[] split = sqlParam.split(",");
+        Map<String, String> paramMap = new HashMap<>();
+        for (String s : split) {
+            String[] split1 = s.split("=");
+            paramMap.put(split1[0], split1[1]);
         }
-        return maxIndex;
+        if (sql == null || sql.length() == 0) return null;
+        StringBuilder res = new StringBuilder();
+        char[] chars = sql.toCharArray();
+        int l= 0,r = 0;
+        boolean flag = false;
+        for (int i = 0; i < chars.length; i++) {
+            if(chars[i] == '$'){
+                l = i;
+                flag = true;
+                continue;
+            }
+            if(flag && !(chars[i] <= '9' && chars[i] >= '0')){
+                r = i;
+                flag = false;
+                String key = sql.substring(l,r);
+                res.append(paramMap.get(key));
+            }
+            if(!flag) res.append(chars[i]);
+        }
+
+        return res.toString();
     }
 
     public void run() throws IOException {
-        int[] input = UtilTool.arrOne();
         long before = System.currentTimeMillis();
-        System.out.println(bestRotation(input));
+        String sql = UtilTool.getStr("./test/text.txt");
+        String sqlParam = UtilTool.getStr("./test/text2.txt");
+
+        System.out.println(sql);
+        System.out.println(sqlParam);
+
+        System.out.println(getSqlResult(sql, sqlParam));
         System.out.println("耗时" + (System.currentTimeMillis() - before) + "ms");
     }
 
