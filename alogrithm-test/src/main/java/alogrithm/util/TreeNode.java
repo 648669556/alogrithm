@@ -1,4 +1,4 @@
-package com.alogrithm.util;
+package alogrithm.util;
 
 public class TreeNode {
     public final int val;

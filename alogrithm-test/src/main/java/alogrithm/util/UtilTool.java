@@ -1,4 +1,4 @@
-package com.alogrithm.util;
+package alogrithm.util;
 
 
 import java.io.*;
@@ -106,7 +106,7 @@ public class UtilTool {
             boolean exists = file.mkdirs();
             if (!exists) throw new IOException("创建文件夹失败");
         }
-        File newFile = new File(path + "/text.txt");
+        File newFile = new File(path + "/test/text.txt");
         if (!newFile.exists()) newFile.createNewFile();
         BufferedReader br = new BufferedReader(new FileReader(newFile));
         String line = br.readLine();
@@ -131,7 +131,7 @@ public class UtilTool {
             boolean exists = file.mkdirs();
             if (!exists) throw new IOException("创建文件夹失败");
         }
-        File newFile = new File(path + "/text.txt");
+        File newFile = new File(path + "/test/text.txt");
         if (!newFile.exists()) newFile.createNewFile();
         BufferedReader br = new BufferedReader(new FileReader(newFile));
         String line = br.readLine();
@@ -178,15 +178,9 @@ public class UtilTool {
     }
 
     public static String getStr(String textPath) throws IOException {
-        File newFile = new File(textPath);
-        if (!newFile.exists()) {
-            try {
-                boolean newFile1 = newFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        BufferedReader br = new BufferedReader(new FileReader(newFile));
+        InputStream systemResourceAsStream = ClassLoader.getSystemResourceAsStream(textPath);
+        if(systemResourceAsStream == null)throw new IOException("不存在"+textPath);
+        BufferedReader br = new BufferedReader(new InputStreamReader(systemResourceAsStream));
         String tempStr = null;
         StringBuilder stringBuilder = new StringBuilder();
         do {
