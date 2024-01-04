@@ -53,15 +53,8 @@ public class Solution {
     }
 
     private String[] getSplit(String s) {
-        char[] chars = s.toCharArray();
-        int l = 0, r = 0;
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] == '=') {
-                l = i;
-                break;
-            }
-        }
-        return new String[]{new String(chars, 0, l), new String(chars, l + 1, chars.length - l - 1)};
+        int l = s.indexOf('=');
+        return new String[]{s.substring(0, l), s.substring(l + 1)};
     }
 
     public void run() throws IOException {
